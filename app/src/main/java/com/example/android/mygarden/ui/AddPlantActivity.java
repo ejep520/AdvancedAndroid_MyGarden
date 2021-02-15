@@ -18,44 +18,45 @@ package com.example.android.mygarden.ui;
 
 import android.content.ContentValues;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.android.mygarden.R;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.android.mygarden.databinding.ActivityAddPlantBinding;
 import com.example.android.mygarden.provider.PlantContract;
+import com.example.android.mygarden.R;
 
 public class AddPlantActivity extends AppCompatActivity {
-    private RecyclerView mTypesRecyclerView;
     private PlantTypesAdapter mTypesAdapter;
+    private ActivityAddPlantBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_plant);
+        binding = ActivityAddPlantBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Plant types are displayed as a recycler view using PlantTypesAdapter
         mTypesAdapter = new PlantTypesAdapter(this);
-        mTypesRecyclerView = (RecyclerView) findViewById(R.id.plant_types_recycler_view);
-        mTypesRecyclerView.setLayoutManager(
+        binding.plantTypesRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
-        mTypesRecyclerView.setAdapter(mTypesAdapter);
+        binding.plantTypesRecyclerView.setAdapter(mTypesAdapter);
 
     }
 
     /**
      * Event handler to handle clicking on a plant type
      *
-     * @param view
+     * @param view The view providing the click action event.
      */
     public void onPlantTypeClick(View view) {
         // When the chosen plant type is clicked, create a new plant and set the creation time and
         // water time to now
         // Extract the plant type from the tag
-        ImageView imgView = (ImageView) view.findViewById(R.id.plant_type_image);
+        ImageView imgView = view.findViewById(R.id.plant_type_image);
         int plantType = (int) imgView.getTag();
         long timeNow = System.currentTimeMillis();
         // Insert the new plant into DB

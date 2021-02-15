@@ -20,16 +20,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.example.android.mygarden.R;
+import com.example.android.mygarden.databinding.ActivityMainBinding;
 
 import static com.example.android.mygarden.provider.PlantContract.BASE_CONTENT_URI;
 import static com.example.android.mygarden.provider.PlantContract.PATH_PLANTS;
@@ -40,26 +42,24 @@ public class MainActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int GARDEN_LOADER_ID = 100;
-    private PlantListAdapter mAdapter;
-
-    private RecyclerView mGardenRecyclerView;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // The main activity displays the garden as a grid layout recycler view
-        mGardenRecyclerView = (RecyclerView) findViewById(R.id.plants_list_recycler_view);
-        mGardenRecyclerView.setLayoutManager(
+        binding.plantsListRecyclerView.setLayoutManager(
                 new GridLayoutManager(this, 4)
         );
-        mAdapter = new PlantListAdapter(this, null);
-        mGardenRecyclerView.setAdapter(mAdapter);
+        binding.plantsListRecyclerView.setAdapter(new PlantListAdapter(this, null));
 
-        getSupportLoaderManager().initLoader(GARDEN_LOADER_ID, null, this);
+        LoaderManager.getInstance(this).initLoader(GARDEN_LOADER_ID, null, this);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri PLANT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLANTS).build();
@@ -68,18 +68,21 @@ public class MainActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        cursor.moveToFirst();
-        mAdapter.swapCursor(cursor);
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+        if (cursor.moveToFirst() && (binding.plantsListRecyclerView.getAdapter() != null)) {
+            ((PlantListAdapter) binding.plantsListRecyclerView.getAdapter()).swapCursor(cursor);
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
-
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        if (binding.plantsListRecyclerView.getAdapter() != null) {
+            ((PlantListAdapter) binding.plantsListRecyclerView.getAdapter()).swapCursor(null);
+        }
     }
 
     public void onPlantClick(View view) {
-        ImageView imgView = (ImageView) view.findViewById(R.id.plant_list_item_image);
+        ImageView imgView = view.findViewById(R.id.plant_list_item_image);
         long plantId = (long) imgView.getTag();
         Intent intent = new Intent(getBaseContext(), PlantDetailActivity.class);
         intent.putExtra(PlantDetailActivity.EXTRA_PLANT_ID, plantId);

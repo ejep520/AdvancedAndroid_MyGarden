@@ -14,47 +14,51 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+
+    xmlns:tools="http://schemas.android.com/tools"
+    tools.context=".ui.AddPlantActivity"
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.example.android.mygarden.ui.AddPlantActivity">
+        android:background="@drawable/gradient_background">
 
-        <TextView
-            style="@style/Base.TextAppearance.AppCompat.Headline"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/select_plant_type" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/plant_types_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/select_plant_type" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/fab_margin"
+            android:contentDescription="@string/back_button"
+            android:onClick="onBackButtonClick"
+            android:src="@drawable/arrow_back_white"
+            app:fabSize="normal" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/plant_types_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp">
-
-        </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="@dimen/fab_margin"
-        android:onClick="onBackButtonClick"
-        android:src="@drawable/arrow_back_white"
-        app:fabSize="normal" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

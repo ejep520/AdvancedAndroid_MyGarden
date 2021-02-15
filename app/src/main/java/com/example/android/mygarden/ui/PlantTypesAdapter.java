@@ -19,12 +19,14 @@ package com.example.android.mygarden.ui;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.utils.PlantUtils;
@@ -52,8 +54,9 @@ public class PlantTypesAdapter extends RecyclerView.Adapter<PlantTypesAdapter.Pl
      * @param viewType The view type of the new View
      * @return A new PlantViewHolder that holds a View with the plant_list_item layout
      */
+    @NonNull
     @Override
-    public PlantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.plant_types_list_item, parent, false);
@@ -85,15 +88,15 @@ public class PlantTypesAdapter extends RecyclerView.Adapter<PlantTypesAdapter.Pl
     /**
      * PlantViewHolder class for the recycler view item
      */
-    class PlantViewHolder extends RecyclerView.ViewHolder {
+    static class PlantViewHolder extends RecyclerView.ViewHolder {
 
         ImageView plantImageView;
         TextView plantTypeText;
 
         public PlantViewHolder(View itemView) {
             super(itemView);
-            plantImageView = (ImageView) itemView.findViewById(R.id.plant_type_image);
-            plantTypeText = (TextView) itemView.findViewById(R.id.plant_type_text);
+            plantImageView = itemView.findViewById(R.id.plant_type_image);
+            plantTypeText = itemView.findViewById(R.id.plant_type_text);
         }
 
     }
