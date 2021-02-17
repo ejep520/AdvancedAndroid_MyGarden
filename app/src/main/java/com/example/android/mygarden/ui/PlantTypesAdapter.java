@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.utils.PlantUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 public class PlantTypesAdapter extends RecyclerView.Adapter<PlantTypesAdapter.PlantViewHolder> {
 
     Context mContext;
@@ -55,8 +57,9 @@ public class PlantTypesAdapter extends RecyclerView.Adapter<PlantTypesAdapter.Pl
      * @return A new PlantViewHolder that holds a View with the plant_list_item layout
      */
     @NonNull
+    @NotNull
     @Override
-    public PlantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PlantViewHolder onCreateViewHolder(@NotNull @NonNull ViewGroup parent, int viewType) {
         // Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.plant_types_list_item, parent, false);
@@ -93,7 +96,7 @@ public class PlantTypesAdapter extends RecyclerView.Adapter<PlantTypesAdapter.Pl
         ImageView plantImageView;
         TextView plantTypeText;
 
-        public PlantViewHolder(View itemView) {
+        public PlantViewHolder(@NotNull @NonNull View itemView) {
             super(itemView);
             plantImageView = itemView.findViewById(R.id.plant_type_image);
             plantTypeText = itemView.findViewById(R.id.plant_type_text);

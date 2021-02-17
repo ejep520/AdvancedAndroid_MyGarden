@@ -27,10 +27,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.provider.PlantContract.PlantEntry;
 import com.example.android.mygarden.utils.PlantUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 public class PlantListAdapter extends RecyclerView.Adapter<PlantListAdapter.PlantViewHolder> {
 
@@ -55,8 +56,9 @@ public class PlantListAdapter extends RecyclerView.Adapter<PlantListAdapter.Plan
      * @return A new PlantViewHolder that holds a View with the plant_list_item layout
      */
     @NonNull
+    @NotNull
     @Override
-    public PlantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PlantViewHolder onCreateViewHolder(@NotNull @NonNull ViewGroup parent, int viewType) {
         // Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.plant_list_item, parent, false);
@@ -64,7 +66,7 @@ public class PlantListAdapter extends RecyclerView.Adapter<PlantListAdapter.Plan
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlantViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull @NonNull PlantViewHolder holder, int position) {
 
         mCursor.moveToPosition(position);
         int idIndex = mCursor.getColumnIndex(PlantEntry._ID);

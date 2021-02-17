@@ -26,6 +26,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,9 +46,10 @@ public class PlantContentProvider extends ContentProvider {
 
     // Declare a static variable for the Uri matcher that you construct
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private static final String TAG = PlantContentProvider.class.getName();
+    // private static final String TAG = PlantContentProvider.class.getName();
 
     // Define a static buildUriMatcher method that associates URI's with their int match
+    @NotNull
     public static UriMatcher buildUriMatcher() {
         // Initialize a UriMatcher
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -68,30 +72,27 @@ public class PlantContentProvider extends ContentProvider {
     /***
      * Handles requests to insert a single new row of data
      *
-     * @param uri
-     * @param values
-     * @return
+     * @param uri This is the content URI where data should be entered.
+     * @param values This is a {@link ContentValues} instance of info to be inserted.
+     * @return The {@link Uri} pointing to the inserted data. The ID -1 indicates an error.
      */
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values) {
+    public Uri insert(@NonNull @NotNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mPlantDbHelper.getWritableDatabase();
 
         // Write URI matching code to identify the match for the plants directory
         int match = sUriMatcher.match(uri);
         Uri returnUri; // URI to be returned
-        switch (match) {
-            case PLANTS:
-                // Insert new values into the database
-                long id = db.insert(PlantEntry.TABLE_NAME, null, values);
-                if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(PlantContract.PlantEntry.CONTENT_URI, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                }
-                break;
-            // Default case throws an UnsupportedOperationException
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (match == PLANTS) {
+            // Insert new values into the database
+            long id = db.insert(PlantEntry.TABLE_NAME, null, values);
+            if (id > 0) {
+                returnUri = ContentUris.withAppendedId(PlantContract.PlantEntry.CONTENT_URI, id);
+            } else {
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+            }
+        } else {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         // Notify the resolver if the uri has been changed, and return the newly inserted URI
@@ -104,15 +105,15 @@ public class PlantContentProvider extends ContentProvider {
     /***
      * Handles requests for data by URI
      *
-     * @param uri
-     * @param projection
-     * @param selection
-     * @param selectionArgs
-     * @param sortOrder
-     * @return
+     * @param uri The content URI of the data to be queried.
+     * @param projection The list of columns to be returned.
+     * @param selection The column name arguments to select the data.
+     * @param selectionArgs The values to select the data by.
+     * @param sortOrder The order to sort the data
+     * @return A {@link Cursor} with the requested query results, if any.
      */
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull @NotNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
         // Get access to underlying database (read-only for query)
@@ -158,28 +159,25 @@ public class PlantContentProvider extends ContentProvider {
     /***
      * Deletes a single row of data
      *
-     * @param uri
-     * @param selection
-     * @param selectionArgs
+     * @param uri The content URI of the data to be deleted.
+     * @param selection The column names of the criteria to select the data to be erased.
+     * @param selectionArgs The criteria values to select the data to be deleted.
      * @return number of rows affected
      */
     @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull @NotNull Uri uri, String selection, String[] selectionArgs) {
         // Get access to the database and write URI matching code to recognize a single item
         final SQLiteDatabase db = mPlantDbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
         // Keep track of the number of deleted plants
         int plantsDeleted; // starts as 0
-        switch (match) {
-            // Handle the single item case, recognized by the ID included in the URI path
-            case PLANT_WITH_ID:
-                // Get the plant ID from the URI path
-                String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-                plantsDeleted = db.delete(PlantEntry.TABLE_NAME, "_id=?", new String[]{id});
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (match==PLANT_WITH_ID) {
+            // Get the plant ID from the URI path
+            String id = uri.getPathSegments().get(1);
+            // Use selections/selectionArgs to filter for this ID
+            plantsDeleted = db.delete(PlantEntry.TABLE_NAME, "_id=?", new String[]{id});
+        } else {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         // Notify the resolver of a change and return the number of items deleted
         if (plantsDeleted != 0) {
@@ -193,13 +191,13 @@ public class PlantContentProvider extends ContentProvider {
     /***
      * Updates a single row of data
      *
-     * @param uri
-     * @param selection
-     * @param selectionArgs
+     * @param uri The content {@link Uri} of the data to be updated.
+     * @param selection The column names of the criteria to select rows for updating.
+     * @param selectionArgs The values of the criteria to select rows for updating.
      * @return number of rows affected
      */
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection,
+    public int update(@NonNull @NotNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         // Get access to underlying database
         final SQLiteDatabase db = mPlantDbHelper.getWritableDatabase();
@@ -219,10 +217,9 @@ public class PlantContentProvider extends ContentProvider {
                 // Append any existing selection options to the ID filter
                 if (selectionArgs == null) selectionArgs = new String[]{id};
                 else {
-                    ArrayList<String> selectionArgsList = new ArrayList<String>();
-                    selectionArgsList.addAll(Arrays.asList(selectionArgs));
+                    ArrayList<String> selectionArgsList = new ArrayList<>(Arrays.asList(selectionArgs));
                     selectionArgsList.add(id);
-                    selectionArgs = selectionArgsList.toArray(new String[selectionArgsList.size()]);
+                    selectionArgs = selectionArgsList.toArray(new String[0]);
                 }
                 plantsUpdated = db.update(PlantEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
@@ -240,9 +237,17 @@ public class PlantContentProvider extends ContentProvider {
         return plantsUpdated;
     }
 
-
+    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    public String getType(@NonNull Uri uri) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public String getType(@NonNull @NotNull Uri uri) {
+        switch (sUriMatcher.match(uri)) {
+            case PLANTS:
+                return PlantEntry.CONTENT_LIST_TYPE;
+            case PLANT_WITH_ID:
+                return PlantEntry.CONTENT_ITEM_TYPE;
+            default:
+                return null;
+        }
     }
 }

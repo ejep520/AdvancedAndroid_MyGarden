@@ -16,6 +16,7 @@ package com.example.android.mygarden.provider;
 * limitations under the License.
 */
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -43,5 +44,10 @@ public class PlantContract {
         public static final String COLUMN_PLANT_TYPE = "plantType";
         public static final String COLUMN_CREATION_TIME = "createdAt";
         public static final String COLUMN_LAST_WATERED_TIME = "lastWateredAt";
+
+        public final static String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_NAME;
+        public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
+                AUTHORITY + "/" + TABLE_NAME;
     }
 }

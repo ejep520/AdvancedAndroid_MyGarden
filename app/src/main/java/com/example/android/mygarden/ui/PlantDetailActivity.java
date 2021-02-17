@@ -22,7 +22,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +34,8 @@ import com.example.android.mygarden.R;
 import com.example.android.mygarden.databinding.ActivityPlantDetailBinding;
 import com.example.android.mygarden.provider.PlantContract;
 import com.example.android.mygarden.utils.PlantUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import static com.example.android.mygarden.provider.PlantContract.BASE_CONTENT_URI;
 import static com.example.android.mygarden.provider.PlantContract.PATH_PLANTS;
@@ -81,6 +82,7 @@ public class PlantDetailActivity extends AppCompatActivity
     }
 
     @NonNull
+    @NotNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri SINGLE_PLANT_URI = ContentUris.withAppendedId(
@@ -90,7 +92,7 @@ public class PlantDetailActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(@NotNull @NonNull Loader<Cursor> loader, Cursor cursor) {
         if (cursor == null || cursor.getCount() < 1) return;
         cursor.moveToFirst();
         int createTimeIndex = cursor.getColumnIndex(PlantContract.PlantEntry.COLUMN_CREATION_TIME);
@@ -123,7 +125,7 @@ public class PlantDetailActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 

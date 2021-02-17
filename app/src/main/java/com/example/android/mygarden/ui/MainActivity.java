@@ -37,6 +37,8 @@ import static com.example.android.mygarden.provider.PlantContract.BASE_CONTENT_U
 import static com.example.android.mygarden.provider.PlantContract.PATH_PLANTS;
 import static com.example.android.mygarden.provider.PlantContract.PlantEntry;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MainActivity
         extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -60,6 +62,7 @@ public class MainActivity
     }
 
     @NonNull
+    @NotNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri PLANT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLANTS).build();
@@ -68,20 +71,21 @@ public class MainActivity
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(@NotNull @NonNull Loader<Cursor> loader,
+                               @NotNull @NonNull Cursor cursor) {
         if (cursor.moveToFirst() && (binding.plantsListRecyclerView.getAdapter() != null)) {
             ((PlantListAdapter) binding.plantsListRecyclerView.getAdapter()).swapCursor(cursor);
         }
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    public void onLoaderReset(@NotNull @NonNull Loader<Cursor> loader) {
         if (binding.plantsListRecyclerView.getAdapter() != null) {
             ((PlantListAdapter) binding.plantsListRecyclerView.getAdapter()).swapCursor(null);
         }
     }
 
-    public void onPlantClick(View view) {
+    public void onPlantClick(@NotNull @NonNull View view) {
         ImageView imgView = view.findViewById(R.id.plant_list_item_image);
         long plantId = (long) imgView.getTag();
         Intent intent = new Intent(getBaseContext(), PlantDetailActivity.class);
@@ -93,5 +97,9 @@ public class MainActivity
     public void onAddFabClick(View view) {
         Intent intent = new Intent(this, AddPlantActivity.class);
         startActivity(intent);
+    }
+
+    public void foo() {
+        onPlantClick(new View(this));
     }
 }
