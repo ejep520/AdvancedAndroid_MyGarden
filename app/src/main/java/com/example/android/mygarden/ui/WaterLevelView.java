@@ -16,13 +16,13 @@ import com.example.android.mygarden.R;
 
 public class WaterLevelView extends View {
 
-    private float mRadius;
-    private float mStrokeWidth;
+    private final float mRadius;
+    private final float mStrokeWidth;
     private int mValue;
-    Context mContext;
-    Paint mPaint;
-    Path mPath;
-    RectF mCircleRec;
+    private final Context mContext;
+    private final Paint mPaint;
+    private final Path mPath;
+    private final RectF mCircleRec;
 
     public WaterLevelView(Context context, AttributeSet attrs) {
         super(context, attrs);

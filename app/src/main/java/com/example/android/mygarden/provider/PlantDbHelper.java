@@ -20,7 +20,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.NonNull;
+
 import com.example.android.mygarden.provider.PlantContract.PlantEntry;
+
+import org.jetbrains.annotations.NotNull;
 
 public class PlantDbHelper extends SQLiteOpenHelper {
 
@@ -36,7 +40,7 @@ public class PlantDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(@NotNull @NonNull SQLiteDatabase sqLiteDatabase) {
 
         // Create a table to hold the plants data
         final String SQL_CREATE_PLANTS_TABLE = "CREATE TABLE " + PlantEntry.TABLE_NAME + " (" +
@@ -49,7 +53,7 @@ public class PlantDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(@NotNull @NonNull SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // For now simply drop the table and create a new one.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PlantEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);

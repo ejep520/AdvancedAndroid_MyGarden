@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.android.mygarden.PlantWateringService;
 import com.example.android.mygarden.databinding.ActivityAddPlantBinding;
 import com.example.android.mygarden.provider.PlantContract;
 import com.example.android.mygarden.R;
@@ -65,6 +66,7 @@ public class AddPlantActivity extends AppCompatActivity {
         contentValues.put(PlantContract.PlantEntry.COLUMN_CREATION_TIME, timeNow);
         contentValues.put(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME, timeNow);
         getContentResolver().insert(PlantContract.PlantEntry.CONTENT_URI, contentValues);
+        PlantWateringService.startActionUpdatePlantWidgets(this);
         // Close this activity
         finish();
     }

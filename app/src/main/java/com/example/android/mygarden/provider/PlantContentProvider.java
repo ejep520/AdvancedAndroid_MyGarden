@@ -45,18 +45,10 @@ public class PlantContentProvider extends ContentProvider {
     public static final int PLANT_WITH_ID = 101;
 
     // Declare a static variable for the Uri matcher that you construct
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
-    // private static final String TAG = PlantContentProvider.class.getName();
-
-    // Define a static buildUriMatcher method that associates URI's with their int match
-    @NotNull
-    public static UriMatcher buildUriMatcher() {
-        // Initialize a UriMatcher
-        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        // Add URI matches
-        uriMatcher.addURI(PlantContract.AUTHORITY, PlantContract.PATH_PLANTS, PLANTS);
-        uriMatcher.addURI(PlantContract.AUTHORITY, PlantContract.PATH_PLANTS + "/#", PLANT_WITH_ID);
-        return uriMatcher;
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static {
+        sUriMatcher.addURI(PlantContract.AUTHORITY, PlantContract.PATH_PLANTS, PLANTS);
+        sUriMatcher.addURI(PlantContract.AUTHORITY, PlantContract.PATH_PLANTS + "/#", PLANT_WITH_ID);
     }
 
     // Member variable for a PlantDbHelper that's initialized in the onCreate() method
@@ -94,7 +86,7 @@ public class PlantContentProvider extends ContentProvider {
         } else {
             throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
+        db.close();
         // Notify the resolver if the uri has been changed, and return the newly inserted URI
         getContext().getContentResolver().notifyChange(uri, null);
 
@@ -179,6 +171,8 @@ public class PlantContentProvider extends ContentProvider {
         } else {
             throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        // Close the database.
+        db.close();
         // Notify the resolver of a change and return the number of items deleted
         if (plantsDeleted != 0) {
             // A plant (or more) was deleted, set notification
@@ -227,7 +221,8 @@ public class PlantContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
+        // Close the database.
+        db.close();
         // Notify the resolver of a change and return the number of items updated
         if (plantsUpdated != 0) {
             // A place (or more) was updated, set notification

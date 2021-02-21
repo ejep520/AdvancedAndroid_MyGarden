@@ -18,10 +18,12 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/plant_widget_provider_info" />
+                android:resource="@xml/plant_widget_provider_info"/>
         </receiver>
 
-        <service android:name=".PlantWateringService" />
+        <service android:name=".PlantWateringService" android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service android:name=".GridWidgetService" android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <provider
             android:name=".provider.PlantContentProvider"
@@ -39,7 +41,7 @@
         </activity>
         <activity
             android:name=".ui.PlantDetailActivity"
-            android:label="@string/title_activity_plant_detail" />
+            android:label="@null" />
         <activity
             android:name=".ui.AddPlantActivity"
             android:label="@string/title_activity_add_plant" />

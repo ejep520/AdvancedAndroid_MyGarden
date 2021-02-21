@@ -30,6 +30,7 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import com.example.android.mygarden.PlantWateringService;
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.databinding.ActivityPlantDetailBinding;
 import com.example.android.mygarden.provider.PlantContract;
@@ -51,6 +52,9 @@ public class PlantDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         binding = ActivityPlantDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mPlantId = getIntent().getLongExtra(EXTRA_PLANT_ID, PlantContract.INVALID_PLANT_ID);
@@ -67,17 +71,22 @@ public class PlantDetailActivity extends AppCompatActivity
         Uri SINGLE_PLANT_URI = ContentUris.withAppendedId(
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLANTS).build(), mPlantId);
         Cursor cursor = getContentResolver().query(SINGLE_PLANT_URI, null, null, null, null);
-        if (cursor == null || cursor.getCount() < 1) return; //can't find this plant!
-        cursor.moveToFirst();
+        if (cursor == null) return; //Query failed spectacularly!
+        if (!cursor.moveToFirst()) { // Query returned a null set.
+            cursor.close();
+            return;
+        }
         long lastWatered = cursor.getLong(cursor.getColumnIndex(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME));
         long timeNow = System.currentTimeMillis();
-        if ((timeNow - lastWatered) > PlantUtils.MAX_AGE_WITHOUT_WATER)
+        if ((timeNow - lastWatered) > PlantUtils.MAX_AGE_WITHOUT_WATER) {
+            cursor.close();
             return; // plant already dead
-
+        }
         ContentValues contentValues = new ContentValues();
         // Update the watered timestamp
         contentValues.put(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME, timeNow);
         getContentResolver().update(SINGLE_PLANT_URI, contentValues, null, null);
+        PlantWateringService.startActionUpdatePlantWidgets(this);
         cursor.close();
     }
 
@@ -125,7 +134,7 @@ public class PlantDetailActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NotNull @NonNull Loader<Cursor> loader) {
 
     }
 
@@ -133,6 +142,7 @@ public class PlantDetailActivity extends AppCompatActivity
         Uri SINGLE_PLANT_URI = ContentUris.withAppendedId(
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLANTS).build(), mPlantId);
         getContentResolver().delete(SINGLE_PLANT_URI, null, null);
+        PlantWateringService.startActionUpdatePlantWidgets(this);
         finish();
     }
 }

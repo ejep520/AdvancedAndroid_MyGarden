@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/widget_margin">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/widget_water_button"
@@ -10,7 +10,8 @@
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
-        android:src="@drawable/water_drop_blue" />
+        android:src="@drawable/water_drop_blue"
+        android:contentDescription="@string/water_button"/>
 
     <ImageView
         android:id="@+id/widget_plant_image"
@@ -18,5 +19,16 @@
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/grass"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:contentDescription="@string/plant_details"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:id="@+id/widget_plant_name"
+        android:textSize="20sp"
+        tools:text="123" />
 </LinearLayout>

@@ -31,18 +31,13 @@ public class PlantUtils {
     public static final long MIN_AGE_BETWEEN_WATER = HOUR_MILLISECONDS * 2; // can water every 2 hours
     static final long DANGER_AGE_WITHOUT_WATER = HOUR_MILLISECONDS * 6; // in danger after 6 hours
     public static final long MAX_AGE_WITHOUT_WATER = HOUR_MILLISECONDS * 12; // plants die after 12 hours
-    static final long TINY_AGE = DAY_MILLISECONDS * 0; // plants start tiny
-    static final long JUVENILE_AGE = DAY_MILLISECONDS * 1; // 1 day old
+    static final long TINY_AGE = 0L; // plants start tiny
+    static final long JUVENILE_AGE = DAY_MILLISECONDS; // 1 day old
     static final long FULLY_GROWN_AGE = DAY_MILLISECONDS * 2; // 2 days old
-
 
     public enum PlantStatus {ALIVE, DYING, DEAD}
 
-    ;
-
     public enum PlantSize {TINY, JUVENILE, FULLY_GROWN}
-
-    ;
 
     /**
      * Returns the corresponding image resource of the plant given the plant's age and
@@ -89,6 +84,7 @@ public class PlantUtils {
         if (size == PlantSize.TINY) resName += "_1";
         else if (size == PlantSize.JUVENILE) resName += "_2";
         else if (size == PlantSize.FULLY_GROWN) resName += "_3";
+        plantTypes.recycle();
         return context.getResources().getIdentifier(resName, "drawable", context.getPackageName());
     }
 
@@ -103,6 +99,7 @@ public class PlantUtils {
         Resources res = context.getResources();
         TypedArray plantTypes = res.obtainTypedArray(R.array.plant_types);
         String resName = plantTypes.getString(type);
+        plantTypes.recycle();
         int resId = context.getResources().getIdentifier(resName, "string", context.getPackageName());
         try {
             return context.getResources().getString(resId);
